@@ -1,12 +1,11 @@
 // User and Authentication Types
 export interface User {
-  id: string | number
   username: string
-  role: UserRole
   name: string
+  role: string
 }
 
-export type UserRole = 'admin' | 'guest' | 'unauthenticated'
+export type UserRole = 'admin' | 'guest'
 
 export interface LoginCredentials {
   username: string
@@ -24,14 +23,6 @@ export interface AuthContextType {
   login: (username: string, password: string) => Promise<LoginResponse>
   loginAsGuest: () => void
   logout: () => void
-  isAuthenticated: () => boolean
-  isAdmin: () => boolean
-  isGuest: () => boolean
-  USER_ROLES: {
-    ADMIN: string
-    GUEST: string
-    UNAUTHENTICATED: string
-  }
 }
 
 // Alumni Data Types

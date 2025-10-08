@@ -6,7 +6,11 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
   line-height: 1.5;
   color: #1f2937;
   background-color: #f9fafb;
@@ -357,6 +361,11 @@ body {
   border-width: 1px;
 }
 
+.border-b-2 {
+  border-bottom: 2px;
+  border-style: solid;
+}
+
 .border-gray-200 {
   border-color: #e5e7eb;
 }
@@ -367,6 +376,10 @@ body {
 
 .border-blue-200 {
   border-color: #bfdbfe;
+}
+
+.border-blue-600 {
+  border-color: #2563eb;
 }
 
 .border-red-200 {
@@ -411,11 +424,15 @@ body {
 }
 
 .shadow-md {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Typography */
@@ -663,7 +680,9 @@ body {
 }
 
 .focus\:ring-offset-2:focus {
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(59, 130, 246, 0.5);
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 4px rgba(59, 130, 246, 0.5);
 }
 
 .focus\:border-transparent:focus {
@@ -779,7 +798,9 @@ body {
 .card {
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e5e7eb;
 }
 
@@ -811,7 +832,7 @@ body {
   .sm\:block {
     display: block;
   }
-  
+
   .sm\:px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
@@ -822,11 +843,11 @@ body {
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
+
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  
+
   .md\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -836,35 +857,35 @@ body {
   .lg\:hidden {
     display: none;
   }
-  
+
   .lg\:flex {
     display: flex;
   }
-  
+
   .lg\:relative {
     position: relative;
   }
-  
+
   .lg\:z-0 {
     z-index: 0;
   }
-  
+
   .lg\:translate-x-0 {
     transform: translateX(0);
   }
-  
+
   .lg\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-   .lg\:grid-cols-3 {
+  .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  
+
   .lg\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  
+
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;

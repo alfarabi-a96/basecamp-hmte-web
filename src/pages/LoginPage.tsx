@@ -1,85 +1,85 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { Eye, EyeOff, User, Lock, LogIn } from "lucide-react";
-import styles from "./LoginPage.module.css";
+import React, { useState, ChangeEvent, FormEvent } from 'react'
+import { Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
+import styles from './LoginPage.module.css'
 
 interface FormData {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }
 
 const LoginPage: React.FC = () => {
-  const { login, loginAsGuest, isAuthenticated, isLoading } = useAuth();
+  const { login, loginAsGuest, isLoading, user } = useAuth()
   const [formData, setFormData] = useState<FormData>({
-    username: "",
-    password: "",
-  });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    username: '',
+    password: ''
+  })
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   // Redirect jika sudah login
-  if (isAuthenticated()) {
-    return <Navigate to="/dashboard" replace />;
+  if (user) {
+    return <Navigate to='/dashboard' replace />
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
-    });
+      [e.target.name]: e.target.value
+    })
     // Clear error saat user mulai mengetik
-    if (error) setError("");
-  };
+    if (error) setError('')
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError("");
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError('')
 
     if (!formData.username || !formData.password) {
-      setError("Username dan password harus diisi");
-      setIsSubmitting(false);
-      return;
+      setError('Username dan password harus diisi')
+      setIsSubmitting(false)
+      return
     }
 
     try {
-      const result = await login(formData.username, formData.password);
+      const result = await login(formData.username, formData.password)
       if (!result.success) {
-        setError(result.error || "Terjadi kesalahan saat login");
+        setError(result.error || 'Terjadi kesalahan saat login')
       }
     } catch (err) {
-      setError("Terjadi kesalahan saat login");
+      setError('Terjadi kesalahan saat login')
     }
 
-    setIsSubmitting(false);
-  };
+    setIsSubmitting(false)
+  }
 
   const handleGuestLogin = (): void => {
-    loginAsGuest();
-  };
+    loginAsGuest()
+  }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
+      <div className='max-w-md w-full space-y-8'>
         {/* Header */}
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center">
-            <User className="h-8 w-8 text-white" />
+        <div className='text-center'>
+          <div className='mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center'>
+            <User className='h-8 w-8 text-white' />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+          <h2 className='mt-6 text-3xl font-bold text-gray-900'>
             Login ke Sistem
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className='mt-2 text-sm text-gray-600'>
             Laporan Keuangan Iuran Alumni
           </p>
         </div>
@@ -87,10 +87,10 @@ const LoginPage: React.FC = () => {
         <div className='flex justify-center'>
           {/* Login Form */}
           <div className={`${styles.form} card p-8`}>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className='space-y-6'>
               {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm'>
                   {error}
                 </div>
               )}
@@ -98,25 +98,26 @@ const LoginPage: React.FC = () => {
               {/* Username Field */}
               <div>
                 <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor='username'
+                  className='block text-sm font-medium text-gray-700 mb-2'
                 >
                   Username
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                <div className='relative'>
+                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                    <User className='h-5 w-5 text-gray-400' />
                   </div>
                   <input
-                    id="username"
-                    name="username"
-                    type="text"
+                    id='username'
+                    name='username'
+                    type='text'
                     required
                     value={formData.username}
                     onChange={handleChange}
-                    className="input-field pl-10"
-                    placeholder="Masukkan username"
+                    className='input-field pl-10'
+                    placeholder='Masukkan username'
                     disabled={isSubmitting}
+                    autoComplete='email'
                   />
                 </div>
               </div>
@@ -124,36 +125,37 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div>
                 <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor='password'
+                  className='block text-sm font-medium text-gray-700 mb-2'
                 >
                   Password
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                <div className='relative'>
+                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                    <Lock className='h-5 w-5 text-gray-400' />
                   </div>
                   <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
+                    id='password'
+                    name='password'
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="input-field pl-10 pr-10"
-                    placeholder="Masukkan password"
+                    className='input-field pl-10 pr-10'
+                    placeholder='Masukkan password'
                     disabled={isSubmitting}
+                    autoComplete='current-password'
                   />
                   <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    type='button'
+                    className='absolute inset-y-0 right-0 pr-3 flex items-center'
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isSubmitting}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <EyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600' />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <Eye className='h-5 w-5 text-gray-400 hover:text-gray-600' />
                     )}
                   </button>
                 </div>
@@ -161,15 +163,15 @@ const LoginPage: React.FC = () => {
 
               {/* Login Button */}
               <button
-                type="submit"
-                className="btn-primary w-full flex items-center justify-center space-x-2"
+                type='submit'
+                className='btn-primary w-full flex items-center justify-center space-x-2'
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
                 ) : (
                   <>
-                    <LogIn className="h-4 w-4" />
+                    <LogIn className='h-4 w-4' />
                     <span>Login</span>
                   </>
                 )}
@@ -177,22 +179,22 @@ const LoginPage: React.FC = () => {
             </form>
 
             {/* Divider */}
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
+            <div className='mt-6'>
+              <div className='relative'>
+                <div className='absolute inset-0 flex items-center'>
+                  <div className='w-full border-t border-gray-300' />
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">atau</span>
+                <div className='relative flex justify-center text-sm'>
+                  <span className='px-2 bg-white text-gray-500'>atau</span>
                 </div>
               </div>
             </div>
 
             {/* Guest Login */}
             <button
-              type="button"
+              type='button'
               onClick={handleGuestLogin}
-              className="mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+              className='mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200'
               disabled={isSubmitting}
             >
               Masuk sebagai guest
@@ -216,7 +218,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

@@ -1,31 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { User, AuthContextType, UserRole, LoginResponse } from '../types'
-
-// Types untuk user
-export const USER_ROLES = {
-  ADMIN: 'admin' as const,
-  GUEST: 'guest' as const,
-  UNAUTHENTICATED: 'unauthenticated' as const
-}
-
-interface DummyUser {
-  id: number
-  username: string
-  password: string
-  role: UserRole
-  name: string
-}
-
-// Dummy users untuk testing
-const DUMMY_USERS: Record<string, DummyUser> = {
-  admin: {
-    id: 1,
-    username: 'admin',
-    password: 'admin123',
-    role: USER_ROLES.ADMIN,
-    name: 'Administrator'
-  }
-}
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode
+} from 'react'
+import { User, AuthContextType, LoginResponse } from '../types'
+import { loginUser, logoutUser } from '../interfaces/userApi'
 
 // Create context
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -64,30 +45,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   // Login function
-  const login = async (username: string, password: string): Promise<LoginResponse> => {
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<LoginResponse> => {
     setIsLoading(true)
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    // Check credentials
-    const foundUser = Object.values(DUMMY_USERS).find(
-      u => u.username === username && u.password === password
-    )
-
-    if (foundUser) {
+    try {
+      const user = await loginUser(username, password)
       const userSession: User = {
-        id: foundUser.id,
-        username: foundUser.username,
-        role: foundUser.role,
-        name: foundUser.name
+        username: user.email || '',
+        name: user.displayName || 'testing login',
+        role: 'admin'
       }
-      
+
       setUser(userSession)
       localStorage.setItem('auth_user', JSON.stringify(userSession))
       setIsLoading(false)
       return { success: true }
-    } else {
+    } catch (erorr) {
       setIsLoading(false)
       return { success: false, error: 'Username atau password salah' }
     }
@@ -96,35 +71,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login as guest
   const loginAsGuest = (): void => {
     const guestUser: User = {
-      id: 'guest',
       username: 'guest',
-      role: USER_ROLES.GUEST,
-      name: 'Guest User'
+      name: 'Guest User',
+      role: 'guest'
     }
-    
+
     setUser(guestUser)
     localStorage.setItem('auth_user', JSON.stringify(guestUser))
   }
 
   // Logout function
-  const logout = (): void => {
+  const logout = async (): Promise<void> => {
+    await logoutUser()
     setUser(null)
     localStorage.removeItem('auth_user')
-  }
-
-  // Check if user is authenticated
-  const isAuthenticated = (): boolean => {
-    return user !== null && user.role !== USER_ROLES.UNAUTHENTICATED
-  }
-
-  // Check if user is admin
-  const isAdmin = (): boolean => {
-    return user !== null && user.role === USER_ROLES.ADMIN
-  }
-
-  // Check if user is guest
-  const isGuest = (): boolean => {
-    return user !== null && user.role === USER_ROLES.GUEST
   }
 
   const value: AuthContextType = {
@@ -132,16 +92,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     login,
     loginAsGuest,
-    logout,
-    isAuthenticated,
-    isAdmin,
-    isGuest,
-    USER_ROLES
+    logout
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
