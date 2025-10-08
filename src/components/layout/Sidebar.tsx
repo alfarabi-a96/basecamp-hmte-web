@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 import { getMenuItemsForRole } from '../../data/alumniData'
 import { SidebarProps } from '../../types'
 import {
@@ -40,10 +40,11 @@ const IconComponent: React.FC<IconComponentProps> = ({
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user, isAdmin, logout } = useAuth()
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const menuItems = getMenuItemsForRole(user?.role || 'guest')
+  const logoutText = isAdmin ? 'Logout': 'Kembali'
 
   const handleLogout = (): void => {
     logout()
@@ -151,7 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                 className='h-5 w-5 flex-shrink-0'
               />
               {!isCollapsed && (
-                <span className='text-sm font-medium'>{item.title}</span>
+                <span className='text-sm font-medium ml-2'>{item.title}</span>
               )}
 
               {/* Tooltip for collapsed state */}
@@ -174,13 +175,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
           >
             <LogOut className='h-5 w-5 flex-shrink-0' />
             {!isCollapsed && (
-              <span className='text-sm font-medium'>Logout</span>
+              <span className='text-sm font-medium ml-2'>{logoutText}</span>
             )}
 
             {/* Tooltip for collapsed state */}
             {isCollapsed && (
               <div className='absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50'>
-                Logout
+                {logoutText}
               </div>
             )}
           </button>

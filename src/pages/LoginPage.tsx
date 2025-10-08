@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
 import styles from './LoginPage.module.css'
 

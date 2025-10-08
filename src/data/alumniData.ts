@@ -1,4 +1,4 @@
-import { AlumniData, MenuItem, UserRole, YearlyContribution } from '../types'
+import { AlumniData, MenuItem, YearlyContribution } from '../types'
 
 // Dummy data untuk laporan keuangan alumni
 export const alumniData: AlumniData = {
@@ -128,7 +128,7 @@ export const getCurrentYearData = (): YearlyContribution => {
 }
 
 // Menu items berdasarkan role
-export const getMenuItemsForRole = (role: UserRole): MenuItem[] => {
+export const getMenuItemsForRole = (role: string): MenuItem[] => {
   const baseMenu: MenuItem[] = [
     {
       id: 'dashboard',
@@ -149,8 +149,7 @@ export const getMenuItemsForRole = (role: UserRole): MenuItem[] => {
       id: 'edit-reports',
       title: 'Edit Laporan',
       path: '/edit-reports',
-      icon: 'Edit3',
-      requiredRole: ['admin']
+      icon: 'Edit3'
     })
   }
 

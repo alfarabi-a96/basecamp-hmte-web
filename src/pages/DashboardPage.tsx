@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import {
   getCurrentYearData,
   formatCurrency,
@@ -10,10 +10,9 @@ import { ProgressBarProps, StatCardProps } from '../types'
 import { TrendingUp, Target, Calendar, DollarSign, Award } from 'lucide-react'
 
 const DashboardPage: React.FC = () => {
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
   const currentYearData = getCurrentYearData()
   const { grandTotal } = alumniData
-  const isAdmin = user?.role === 'admin'
 
   // Progress bar component
   const ProgressBar: React.FC<ProgressBarProps> = ({

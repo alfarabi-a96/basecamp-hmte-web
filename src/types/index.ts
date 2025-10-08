@@ -5,8 +5,6 @@ export interface User {
   role: string
 }
 
-export type UserRole = 'admin' | 'guest'
-
 export interface LoginCredentials {
   username: string
   password: string
@@ -19,6 +17,7 @@ export interface LoginResponse {
 
 export interface AuthContextType {
   user: User | null
+  isAdmin: boolean
   isLoading: boolean
   login: (username: string, password: string) => Promise<LoginResponse>
   loginAsGuest: () => void
@@ -60,8 +59,7 @@ export interface MenuItem {
   id: string
   title: string
   path: string
-  icon: string
-  requiredRole?: UserRole[]
+  icon: string 
 }
 
 // Component Props Types

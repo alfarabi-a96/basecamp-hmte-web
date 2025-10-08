@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import {
   alumniData,
   formatCurrency,
@@ -8,9 +8,6 @@ import {
 import { Calendar, TrendingUp, Target } from 'lucide-react'
 
 const ReportsPage: React.FC = () => {
-  const { user } = useAuth()
-  const isAdmin = user?.role === 'admin'
-
   return (
     <div className='space-y-6'>
       {/* Page Header */}
@@ -122,16 +119,6 @@ const ReportsPage: React.FC = () => {
           </div>
         ))}
       </div>
-
-      {/* Admin Note */}
-      {isAdmin && (
-        <div className='card p-4 bg-blue-50 border-blue-200'>
-          <p className='text-sm text-blue-700'>
-            <strong>Catatan:</strong> Anda masuk sebagai guest. Untuk mengedit
-            data laporan, silakan login sebagai administrator.
-          </p>
-        </div>
-      )}
     </div>
   )
 }

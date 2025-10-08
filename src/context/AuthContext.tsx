@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useContext,
   useState,
   useEffect,
   ReactNode
@@ -9,16 +8,7 @@ import { User, AuthContextType, LoginResponse } from '../types'
 import { loginUser, logoutUser } from '../interfaces/userApi'
 
 // Create context
-const AuthContext = createContext<AuthContextType | null>(null)
-
-// Custom hook untuk menggunakan auth context
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
+export const AuthContext = createContext<AuthContextType | null>(null)
 
 interface AuthProviderProps {
   children: ReactNode
@@ -89,6 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const value: AuthContextType = {
     user,
+    isAdmin: user?.role === 'admin',
     isLoading,
     login,
     loginAsGuest,

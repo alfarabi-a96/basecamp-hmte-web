@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { Plus, Edit, Save, X } from 'lucide-react'
 // import { getAuth, updateProfile } from 'firebase/auth'
 
@@ -11,7 +11,7 @@ interface FormData {
 }
 
 const EditReportsPage: React.FC = () => {
-  const { user } = useAuth()
+  const { isAdmin } = useAuth()
   const [showAddForm, setShowAddForm] = useState<boolean>(false)
   const [editingItem, setEditingItem] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
@@ -21,7 +21,6 @@ const EditReportsPage: React.FC = () => {
     keterangan: ''
   })
 
-  const isAdmin = user?.role === 'admin'
   // Redirect non-admin users
   if (!isAdmin) {
     return (
@@ -60,7 +59,13 @@ const EditReportsPage: React.FC = () => {
 
   const handleEdit = async (id: string): Promise<any> => {
     setEditingItem(id)
-    // Load data for editing
+    // const auth = getAuth()
+    // const user = auth.currentUser
+
+    // if (user) {
+    //   await updateProfile(user, { displayName: 'Alfa' })
+    //   console.log('Display Name berhasil ditambahkan:', user.displayName)
+    // }
   }
 
   return (
