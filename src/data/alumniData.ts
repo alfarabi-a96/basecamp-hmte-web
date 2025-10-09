@@ -123,10 +123,6 @@ export const calculateProgress = (current: number, target: number): number => {
   return Math.round((current / target) * 100)
 }
 
-export const getCurrentYearData = (): YearlyContribution => {
-  return alumniData.contributionsByYear[0] // Data tahun terbaru
-}
-
 // Menu items berdasarkan role
 export const getMenuItemsForRole = (role: string): MenuItem[] => {
   const baseMenu: MenuItem[] = [

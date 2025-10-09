@@ -4,7 +4,7 @@ import { HeaderProps } from '../../types'
 import { Menu, Bell, User } from 'lucide-react'
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { user, isAdmin} = useAuth()
+  const { user, isAdmin } = useAuth()
 
   return (
     <header className='bg-white shadow-sm border-b border-gray-200 px-4 py-3'>

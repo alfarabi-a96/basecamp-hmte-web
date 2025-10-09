@@ -44,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const menuItems = getMenuItemsForRole(user?.role || 'guest')
-  const logoutText = isAdmin ? 'Logout': 'Kembali'
+  const logoutText = isAdmin ? 'Logout' : 'Kembali'
 
   const handleLogout = (): void => {
     logout()
