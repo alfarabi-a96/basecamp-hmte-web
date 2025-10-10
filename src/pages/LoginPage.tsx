@@ -1,14 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
+import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
-import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
-import styles from './LoginPage.module.css'
 import Loading from '../components/Loading'
-
-interface FormData {
-  username: string
-  password: string
-}
+import { FormData } from '../types'
+import styles from './LoginPage.module.css'
 
 const LoginPage: React.FC = () => {
   const { login, loginAsGuest, isLoading, user } = useAuth()

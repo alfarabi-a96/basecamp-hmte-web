@@ -1,74 +1,79 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react'
-import { useAuth } from '../context/useAuth'
-import { Plus, Edit, Save, X } from 'lucide-react'
-// import { getAuth, updateProfile } from 'firebase/auth'
-
-interface FormData {
-  angkatan: string
-  jumlahIuran: string
-  tahun: string
-  keterangan: string
-}
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react'
+import { Edit, X } from 'lucide-react'
+import { DocumentData } from 'firebase/firestore'
+import {
+  getYearMeta,
+  updateAngkatanAndIuranTotal
+} from '../clients/firestore/firestoreAction'
+import Loading from '../components/Loading'
+import { formatCurrency } from '../utils'
 
 const EditReportsPage: React.FC = () => {
-  const { isAdmin } = useAuth()
-  const [showAddForm, setShowAddForm] = useState<boolean>(false)
-  const [editingItem, setEditingItem] = useState<string | null>(null)
-  const [formData, setFormData] = useState<FormData>({
-    angkatan: '',
-    jumlahIuran: '',
-    tahun: '2024',
-    keterangan: ''
+  const [meta, setMeta] = useState<DocumentData | null>(null)
+  const [isLoading, setLoading] = useState(false)
+  const [jumlahIuran, setJumlahIuran] = useState<string>('')
+  const [showEditForm, setShowEditForm] = useState<Record<string, number>>({
+    angkatan: 0
   })
 
-  // Redirect non-admin users
-  if (!isAdmin) {
-    return (
-      <div className='card p-6 text-center'>
-        <h1 className='text-xl font-semibold text-gray-900 mb-2'>
-          Akses Ditolak
-        </h1>
-        <p className='text-gray-600'>
-          Halaman ini hanya dapat diakses oleh administrator.
-        </p>
-      </div>
-    )
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      const metaData = await getYearMeta('2025')
+
+      setMeta(metaData)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (showEditForm.angkatan !== 0)
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+  }, [showEditForm.angkatan])
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ): void => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }))
+    const { value } = e.target
+    setJumlahIuran(value)
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
-    // Handle form submission logic here
-    setShowAddForm(false)
-    setFormData({
-      angkatan: '',
-      jumlahIuran: '',
-      tahun: '2024',
-      keterangan: ''
-    })
+    setLoading(true)
+
+    try {
+      await updateAngkatanAndIuranTotal(
+        '2025',
+        showEditForm.angkatan,
+        Number(jumlahIuran)
+      )
+
+      await fetchData()
+
+      alert('Data berhasil diperbarui!')
+    } catch (error) {
+      alert('Gagal memperbarui data!')
+    } finally {
+      setJumlahIuran('')
+      setShowEditForm({ angkatan: 0 })
+      setLoading(false)
+    }
   }
 
-  const handleEdit = async (id: string): Promise<any> => {
-    setEditingItem(id)
-    // const auth = getAuth()
-    // const user = auth.currentUser
-
-    // if (user) {
-    //   await updateProfile(user, { displayName: 'Alfa' })
-    //   console.log('Display Name berhasil ditambahkan:', user.displayName)
-    // }
-  }
-
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <div className='space-y-6'>
       {/* Page Header */}
       <div className='card p-6'>
@@ -81,25 +86,29 @@ const EditReportsPage: React.FC = () => {
               Kelola data iuran alumni dan angkatan
             </p>
           </div>
-          <button
+          {/* <button
             onClick={() => setShowAddForm(true)}
             className='btn-primary flex items-center space-x-2'
           >
             <Plus className='h-4 w-4' />
             <span>Tambah Data</span>
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Add Form */}
-      {showAddForm && (
+      {showEditForm.angkatan !== 0 && (
         <div className='card p-6'>
           <div className='flex items-center justify-between mb-4'>
             <h2 className='text-lg font-semibold text-gray-900'>
-              Tambah Data Iuran
+              Update Data Iuran Angkatan {showEditForm.angkatan}
             </h2>
             <button
-              onClick={() => setShowAddForm(false)}
+              onClick={() =>
+                setShowEditForm({
+                  angkatan: 0
+                })
+              }
               className='p-2 hover:bg-gray-100 rounded-lg'
             >
               <X className='h-4 w-4' />
@@ -110,7 +119,7 @@ const EditReportsPage: React.FC = () => {
             onSubmit={handleSubmit}
             className='grid grid-cols-1 md:grid-cols-2 gap-4'
           >
-            <div>
+            {/* <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
                 Angkatan
               </label>
@@ -122,12 +131,16 @@ const EditReportsPage: React.FC = () => {
                 required
               >
                 <option value=''>Pilih Angkatan</option>
-                <option value='2020'>Angkatan 2020</option>
-                <option value='2019'>Angkatan 2019</option>
-                <option value='2018'>Angkatan 2018</option>
-                <option value='2017'>Angkatan 2017</option>
+                {Array.from({ length: 2020 - 1994 + 1 }, (_, i) => {
+                  const tahun = 1994 + i
+                  return (
+                    <option key={tahun} value={tahun}>
+                      Angkatan {tahun}
+                    </option>
+                  )
+                })}
               </select>
-            </div>
+            </div> */}
 
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -136,40 +149,11 @@ const EditReportsPage: React.FC = () => {
               <input
                 type='number'
                 name='jumlahIuran'
-                value={formData.jumlahIuran}
+                value={jumlahIuran}
                 onChange={handleInputChange}
                 className='input-field'
                 placeholder='Masukkan jumlah iuran'
                 required
-              />
-            </div>
-
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Tahun
-              </label>
-              <input
-                type='number'
-                name='tahun'
-                value={formData.tahun}
-                onChange={handleInputChange}
-                className='input-field'
-                placeholder='2024'
-                required
-              />
-            </div>
-
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Keterangan
-              </label>
-              <input
-                type='text'
-                name='keterangan'
-                value={formData.keterangan}
-                onChange={handleInputChange}
-                className='input-field'
-                placeholder='Keterangan tambahan'
               />
             </div>
 
@@ -179,7 +163,11 @@ const EditReportsPage: React.FC = () => {
               </button>
               <button
                 type='button'
-                onClick={() => setShowAddForm(false)}
+                onClick={() =>
+                  setShowEditForm({
+                    angkatan: 0
+                  })
+                }
                 className='btn-secondary'
               >
                 Batal
@@ -205,64 +193,36 @@ const EditReportsPage: React.FC = () => {
                 <th className='text-right py-3 px-4 text-sm font-medium text-gray-500'>
                   Jumlah Iuran
                 </th>
-                <th className='text-right py-3 px-4 text-sm font-medium text-gray-500'>
-                  Kontributor
-                </th>
-                <th className='text-right py-3 px-4 text-sm font-medium text-gray-500'>
-                  Tahun
-                </th>
                 <th className='text-center py-3 px-4 text-sm font-medium text-gray-500'>
-                  Aksi
+                  Edit
                 </th>
               </tr>
             </thead>
             <tbody>
               {/* Sample rows */}
-              <tr className='border-b border-gray-100'>
-                <td className='py-3 px-4 text-sm font-medium text-gray-900'>
-                  Angkatan 2020
-                </td>
-                <td className='py-3 px-4 text-sm text-gray-900 text-right'>
-                  Rp 8.500.000
-                </td>
-                <td className='py-3 px-4 text-sm text-gray-900 text-right'>
-                  17/25
-                </td>
-                <td className='py-3 px-4 text-sm text-gray-900 text-right'>
-                  2024
-                </td>
-                <td className='py-3 px-4 text-center'>
-                  <button
-                    onClick={() => handleEdit('1')}
-                    className='p-1 hover:bg-gray-100 rounded'
-                  >
-                    <Edit className='h-4 w-4 text-gray-600' />
-                  </button>
-                </td>
-              </tr>
-
-              <tr className='border-b border-gray-100'>
-                <td className='py-3 px-4 text-sm font-medium text-gray-900'>
-                  Angkatan 2019
-                </td>
-                <td className='py-3 px-4 text-sm text-gray-900 text-right'>
-                  Rp 9.200.000
-                </td>
-                <td className='py-3 px-4 text-sm text-gray-900 text-right'>
-                  23/30
-                </td>
-                <td className='py-3 px-4 text-sm text-gray-900 text-right'>
-                  2024
-                </td>
-                <td className='py-3 px-4 text-center'>
-                  <button
-                    onClick={() => handleEdit('2')}
-                    className='p-1 hover:bg-gray-100 rounded'
-                  >
-                    <Edit className='h-4 w-4 text-gray-600' />
-                  </button>
-                </td>
-              </tr>
+              {meta?.angkatanList.map((angkatan: Record<string, number>) => (
+                <tr className='border-b border-gray-100'>
+                  <td className='py-3 px-4 text-sm font-medium text-gray-900'>
+                    {angkatan.tahunAngkatan}
+                  </td>
+                  <td className='py-3 px-4 text-sm text-gray-900 text-right'>
+                    {formatCurrency(angkatan.total)}
+                  </td>
+                  <td className='py-3 px-4 text-center'>
+                    <button
+                      onClick={() =>
+                        setShowEditForm({
+                          angkatan: angkatan.tahunAngkatan
+                        })
+                      }
+                      disabled={showEditForm.angkatan !== 0}
+                      className='p-1 hover:bg-gray-100 rounded cursor-pointer'
+                    >
+                      <Edit className='h-4 w-4 text-gray-600' />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -274,7 +234,6 @@ const EditReportsPage: React.FC = () => {
           Petunjuk Penggunaan
         </h3>
         <ul className='text-yellow-800 space-y-1 text-sm'>
-          <li>• Klik tombol "Tambah Data" untuk menambah iuran baru</li>
           <li>• Klik ikon edit untuk mengubah data yang sudah ada</li>
           <li>
             • Pastikan semua data yang dimasukkan sudah benar sebelum disimpan

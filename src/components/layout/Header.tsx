@@ -1,7 +1,7 @@
 import React from 'react'
+import { Menu, Bell, User } from 'lucide-react'
 import { useAuth } from '../../context/useAuth'
 import { HeaderProps } from '../../types'
-import { Menu, Bell, User } from 'lucide-react'
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { user, isAdmin } = useAuth()

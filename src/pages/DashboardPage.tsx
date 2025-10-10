@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../context/useAuth'
-import { formatCurrency, calculateProgress } from '../data/alumniData'
-import { ProgressBarProps, StatCardProps } from '../types'
-import { TrendingUp, Target, Calendar, DollarSign, Award } from 'lucide-react'
-import { getSummary, getYearMeta } from '../clients/firestore/firestoreAction'
 import { DocumentData } from 'firebase/firestore'
+import { TrendingUp, Target, Calendar, DollarSign, Award } from 'lucide-react'
+import { useAuth } from '../context/useAuth'
+import { ProgressBarProps, StatCardProps } from '../types'
+import { getSummary, getYearMeta } from '../clients/firestore/firestoreAction'
 import Loading from '../components/Loading'
+import { formatCurrency, transformDate, calculateProgress } from '../utils'
 
 const DashboardPage: React.FC = () => {
   const { user, isAdmin } = useAuth()
@@ -13,15 +13,9 @@ const DashboardPage: React.FC = () => {
   const [meta, setMeta] = useState<DocumentData | null>(null)
   const [summary, setSummary] = useState<DocumentData | null>(null)
   const [isLoading, setLoading] = useState(false)
-  const [isError, setError] = useState(false)
 
-  const ts = meta?.meta.last_update.seconds
-  const date = new Date(ts * 1000)
-  const updatedDate = date.toLocaleDateString('id-ID', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  })
+  const ts = meta?.iuranData.lastUpdate.seconds
+  const updatedDate = transformDate(ts)
 
   const fetchData = async () => {
     try {
@@ -33,7 +27,6 @@ const DashboardPage: React.FC = () => {
       setSummary(summaryData)
     } catch (err) {
       console.error(err)
-      setError(true)
     } finally {
       setLoading(false)
     }
@@ -42,7 +35,8 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     fetchData()
   }, [])
-  console.log('isError', isError)
+
+  console.log('summary', summary)
 
   // Progress bar component
   const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -144,40 +138,27 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
         </div>
-        {isAdmin && (
-          <div className='mt-4 bg-red-50 p-3'>
-            <p className='text-orange-700 mb-4'>
-              Sebagai admin, Anda dapat mengedit laporan dan mengelola data
-              iuran.
-            </p>
-            <div className='flex flex-wrap gap-3'>
-              <button className='btn-primary'>Edit Laporan Iuran</button>
-              <button className='btn-secondary'>Kelola Angkatan</button>
-              <button className='btn-secondary'>Export Data</button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Quick Stats */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         <StatCard
           title='Iuran Tahun Ini'
-          value={formatCurrency(meta?.meta.total)}
+          value={formatCurrency(meta?.iuranData.total)}
           icon={DollarSign}
           color='green'
-          subtitle={`dari ${formatCurrency(meta?.meta.target)}`}
+          subtitle={`dari ${formatCurrency(meta?.iuranData.target)}`}
         />
         <StatCard
           title='Progress Tahun Ini'
-          value={`${calculateProgress(meta?.meta.total, meta?.meta.target)}%`}
+          value={`${calculateProgress(meta?.iuranData.total, meta?.iuranData.target)}%`}
           icon={Target}
           color='blue'
           subtitle='dari target'
         />
         <StatCard
           title='Total Keseluruhan'
-          value={formatCurrency(summary?.total)}
+          value={formatCurrency(summary?.[2025]?.total)}
           icon={Award}
           color='yellow'
           subtitle='semua tahun'
@@ -196,8 +177,8 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <ProgressBar
-            current={meta?.meta.total}
-            target={meta?.meta.target}
+            current={meta?.iuranData.total}
+            target={meta?.iuranData.target}
             label='Target Tahunan'
           />
 
@@ -221,8 +202,8 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <ProgressBar
-            current={summary?.total}
-            target={summary?.target}
+            current={summary?.[2025]?.total}
+            target={summary?.[2025]?.target}
             label='Total Semua Tahun'
           />
         </div>
@@ -236,13 +217,13 @@ const DashboardPage: React.FC = () => {
 
         <div className='space-y-4'>
           {meta?.angkatanList.map((angkatan: Record<string, number>) => (
-            <div key={angkatan.angkatanTahun} className='space-y-2'>
+            <div key={angkatan.tahunAngkatan} className='space-y-2'>
               <div className='flex justify-between items-center'>
                 <span className='font-medium text-gray-700'>
-                  {angkatan.angkatanTahun}
+                  {angkatan.tahunAngkatan}
                 </span>
               </div>
-              <div className='w-full bg-gray-200 rounded-full h-2'>
+              {/* <div className='w-full bg-gray-200 rounded-full h-2'>
                 <div
                   className='bg-blue-600 h-2 rounded-full transition-all duration-500 max-w-100'
                   style={{
@@ -252,7 +233,7 @@ const DashboardPage: React.FC = () => {
                     )}%`
                   }}
                 />
-              </div>
+              </div> */}
               <div className='flex justify-between text-sm text-gray-500'>
                 <span>{formatCurrency(angkatan.total)}</span>
               </div>
