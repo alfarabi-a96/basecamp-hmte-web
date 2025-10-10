@@ -182,13 +182,9 @@ const DashboardPage: React.FC = () => {
             label='Target Tahunan'
           />
 
-          <div className='mt-6 pt-4 border-t border-gray-200'>
-            <div className='grid grid-cols-2 gap-4 text-sm'>
-              <div>
-                <span className='text-gray-500'>Update terakhir:</span>
-                <span className='font-medium ml-2'>{updatedDate}</span>
-              </div>
-            </div>
+          <div className='mt-6 pt-4 border-t border-gray-200 text-sm'>
+            <span className='text-gray-500'>Update terakhir:</span>
+            <span className='font-medium ml-2'>{updatedDate}</span>
           </div>
         </div>
 
