@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginAsGuest = (): void => {
     const guestUser: User = {
       username: 'guest',
-      name: 'Guest User',
+      name: 'uda / uni alumni',
       role: 'guest'
     }
 
