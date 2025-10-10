@@ -28,13 +28,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         {/* Right Side - User Info & Actions */}
         <div className='flex items-center space-x-4'>
-          {/* Notifications */}
-          <button className='p-2 rounded-lg hover:bg-gray-100 transition-colors relative'>
-            <Bell className='h-5 w-5 text-gray-600' />
-            {/* Notification Badge */}
-            <span className='absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full'></span>
-          </button>
-
           {/* User Menu */}
           <div className='flex items-center space-x-3 pl-4 border-l border-gray-200'>
             <div className='h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center'>
