@@ -190,7 +190,7 @@ const LoginPage: React.FC = () => {
               className='mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200'
               disabled={isSubmitting}
             >
-              Masuk sebagai tamu
+              Masuk tanpa login
             </button>
           </div>
 
