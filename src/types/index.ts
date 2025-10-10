@@ -59,7 +59,7 @@ export interface MenuItem {
   id: string
   title: string
   path: string
-  icon: string 
+  icon: string
 }
 
 // Component Props Types
@@ -104,4 +104,9 @@ export interface ApiResponse<T = any> {
   data?: T
   error?: string
   message?: string
+}
+
+export interface FormData {
+  username: string
+  password: string
 }

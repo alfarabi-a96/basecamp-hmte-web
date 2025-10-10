@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/useAuth'
-import { getMenuItemsForRole } from '../../data/alumniData'
-import { SidebarProps } from '../../types'
 import {
   X,
   LayoutDashboard,
@@ -15,6 +12,9 @@ import {
   ChevronRight,
   LucideIcon
 } from 'lucide-react'
+import { useAuth } from '../../context/useAuth'
+import { SidebarProps } from '../../types'
+import { getMenuItemsForRole } from '../../utils'
 
 // Map icon names to components
 const iconMap: Record<string, LucideIcon> = {
@@ -44,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const menuItems = getMenuItemsForRole(user?.role || 'guest')
-  const logoutText = isAdmin ? 'Logout': 'Kembali'
+  const logoutText = isAdmin ? 'Logout' : 'Kembali'
 
   const handleLogout = (): void => {
     logout()

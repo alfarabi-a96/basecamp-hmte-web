@@ -1,18 +1,42 @@
-import React from 'react'
-import { useAuth } from '../context/useAuth'
-import {
-  getCurrentYearData,
-  formatCurrency,
-  calculateProgress,
-  alumniData
-} from '../data/alumniData'
-import { ProgressBarProps, StatCardProps } from '../types'
+import React, { useEffect, useState } from 'react'
+import { DocumentData } from 'firebase/firestore'
 import { TrendingUp, Target, Calendar, DollarSign, Award } from 'lucide-react'
+import { useAuth } from '../context/useAuth'
+import { ProgressBarProps, StatCardProps } from '../types'
+import { getSummary, getYearMeta } from '../clients/firestore/firestoreAction'
+import Loading from '../components/Loading'
+import { formatCurrency, transformDate, calculateProgress } from '../utils'
 
 const DashboardPage: React.FC = () => {
   const { user, isAdmin } = useAuth()
-  const currentYearData = getCurrentYearData()
-  const { grandTotal } = alumniData
+  const currentYearData = new Date().getFullYear()
+  const [meta, setMeta] = useState<DocumentData | null>(null)
+  const [summary, setSummary] = useState<DocumentData | null>(null)
+  const [isLoading, setLoading] = useState(false)
+
+  const ts = meta?.iuranData.lastUpdate.seconds
+  const updatedDate = transformDate(ts)
+
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      const metaData = await getYearMeta('2025')
+      const summaryData = await getSummary()
+
+      setMeta(metaData)
+      setSummary(summaryData)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  console.log('summary', summary)
 
   // Progress bar component
   const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -91,7 +115,9 @@ const DashboardPage: React.FC = () => {
     </div>
   )
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <div className='space-y-6'>
       {/* Welcome Header */}
       <div className='card p-6'>
@@ -108,47 +134,31 @@ const DashboardPage: React.FC = () => {
           <div className='hidden sm:block'>
             <div className='text-right'>
               <p className='text-sm text-blue-100'>Tahun Aktif</p>
-              <p className='text-xl font-bold'>{currentYearData.year}</p>
+              <p className='text-xl font-bold'>{currentYearData}</p>
             </div>
           </div>
         </div>
-        {isAdmin && (
-          <div className='mt-4 bg-red-50 p-3'>
-            <p className='text-orange-700 mb-4'>
-              Sebagai admin, Anda dapat mengedit laporan dan mengelola data
-              iuran.
-            </p>
-            <div className='flex flex-wrap gap-3'>
-              <button className='btn-primary'>Edit Laporan Iuran</button>
-              <button className='btn-secondary'>Kelola Angkatan</button>
-              <button className='btn-secondary'>Export Data</button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Quick Stats */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         <StatCard
           title='Iuran Tahun Ini'
-          value={formatCurrency(currentYearData.collected)}
+          value={formatCurrency(meta?.iuranData.total)}
           icon={DollarSign}
           color='green'
-          subtitle={`dari ${formatCurrency(currentYearData.target)}`}
+          subtitle={`dari ${formatCurrency(meta?.iuranData.target)}`}
         />
         <StatCard
           title='Progress Tahun Ini'
-          value={`${calculateProgress(
-            currentYearData.collected,
-            currentYearData.target
-          )}%`}
+          value={`${calculateProgress(meta?.iuranData.total, meta?.iuranData.target)}%`}
           icon={Target}
           color='blue'
           subtitle='dari target'
         />
         <StatCard
           title='Total Keseluruhan'
-          value={formatCurrency(grandTotal.totalCollected)}
+          value={formatCurrency(summary?.[2025]?.total)}
           icon={Award}
           color='yellow'
           subtitle='semua tahun'
@@ -161,14 +171,14 @@ const DashboardPage: React.FC = () => {
         <div className='card p-6'>
           <div className='flex items-center justify-between mb-4'>
             <h3 className='text-lg font-semibold text-gray-900'>
-              Progress Iuran {currentYearData.year}
+              Progress Iuran {currentYearData}
             </h3>
             <Calendar className='h-5 w-5 text-gray-400' />
           </div>
 
           <ProgressBar
-            current={currentYearData.collected}
-            target={currentYearData.target}
+            current={meta?.iuranData.total}
+            target={meta?.iuranData.target}
             label='Target Tahunan'
           />
 
@@ -176,9 +186,7 @@ const DashboardPage: React.FC = () => {
             <div className='grid grid-cols-2 gap-4 text-sm'>
               <div>
                 <span className='text-gray-500'>Update terakhir:</span>
-                <span className='font-medium ml-2'>
-                  {currentYearData.lastUpdated}
-                </span>
+                <span className='font-medium ml-2'>{updatedDate}</span>
               </div>
             </div>
           </div>
@@ -194,51 +202,40 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <ProgressBar
-            current={grandTotal.totalCollected}
-            target={grandTotal.totalTarget}
+            current={summary?.[2025]?.total}
+            target={summary?.[2025]?.target}
             label='Total Semua Tahun'
           />
-
-          <div className='mt-6 pt-4 border-t border-gray-200'>
-            <div className='space-y-2 text-sm'>
-              <div className='flex justify-between'>
-                <span className='text-gray-500'>Rata-rata per tahun:</span>
-                <span className='font-medium'>
-                  {formatCurrency(grandTotal.averagePerYear)}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Breakdown by Class (Current Year) */}
       <div className='card p-6'>
         <h3 className='text-lg font-semibold text-gray-900 mb-4'>
-          Kontribusi per Angkatan ({currentYearData.year})
+          Kontribusi per Angkatan
         </h3>
 
         <div className='space-y-4'>
-          {currentYearData.byClass.map((classData, index) => (
-            <div key={index} className='space-y-2'>
+          {meta?.angkatanList.map((angkatan: Record<string, number>) => (
+            <div key={angkatan.tahunAngkatan} className='space-y-2'>
               <div className='flex justify-between items-center'>
                 <span className='font-medium text-gray-700'>
-                  {classData.className}
+                  {angkatan.tahunAngkatan}
                 </span>
               </div>
-              <div className='w-full bg-gray-200 rounded-full h-2'>
+              {/* <div className='w-full bg-gray-200 rounded-full h-2'>
                 <div
-                  className='bg-blue-600 h-2 rounded-full transition-all duration-500'
+                  className='bg-blue-600 h-2 rounded-full transition-all duration-500 max-w-100'
                   style={{
                     width: `${calculateProgress(
-                      classData.contributors,
-                      classData.totalAlumni
+                      angkatan.total,
+                      meta.meta.targetPerAngkatan
                     )}%`
                   }}
                 />
-              </div>
+              </div> */}
               <div className='flex justify-between text-sm text-gray-500'>
-                <span>{formatCurrency(classData.collected)}</span>
+                <span>{formatCurrency(angkatan.total)}</span>
               </div>
             </div>
           ))}

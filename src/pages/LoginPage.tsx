@@ -1,13 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
+import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
-import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
+import Loading from '../components/Loading'
+import { FormData } from '../types'
 import styles from './LoginPage.module.css'
-
-interface FormData {
-  username: string
-  password: string
-}
 
 const LoginPage: React.FC = () => {
   const { login, loginAsGuest, isLoading, user } = useAuth()
@@ -61,11 +58,7 @@ const LoginPage: React.FC = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
-      </div>
-    )
+    return <Loading />
   }
 
   return (
