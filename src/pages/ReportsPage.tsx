@@ -3,11 +3,17 @@ import { Calendar, TrendingUp, Target } from 'lucide-react'
 import { DocumentData } from 'firebase/firestore'
 import { getSummary } from '../clients/firestore/firestoreAction'
 import Loading from '../components/Loading'
-import { calculateProgress, formatCurrency, transformDate } from '../utils'
+import {
+  calculateProgress,
+  formatCurrency,
+  transformCurrentYear,
+  transformDate
+} from '../utils'
 
 const ReportsPage: React.FC = () => {
   const [summary, setSummary] = useState<DocumentData>({})
   const [isLoading, setLoading] = useState(false)
+  const currentYearData = transformCurrentYear()
 
   const fetchData = async () => {
     try {
@@ -53,7 +59,7 @@ const ReportsPage: React.FC = () => {
             Total Dana Alumni
           </h3>
           <p className='text-2xl font-bold text-green-600'>
-            {formatCurrency(summary?.[2025]?.total)}
+            {formatCurrency(summary?.[currentYearData]?.total)}
           </p>
         </div>
         <div className='card p-6 text-center'>
@@ -62,7 +68,7 @@ const ReportsPage: React.FC = () => {
             Target Tahun ini
           </h3>
           <p className='text-2xl font-bold text-blue-600'>
-            {formatCurrency(summary?.[2025]?.target)}
+            {formatCurrency(summary?.[currentYearData]?.target)}
           </p>
         </div>
       </div>

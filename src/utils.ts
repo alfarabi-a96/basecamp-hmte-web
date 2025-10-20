@@ -49,3 +49,7 @@ export const getMenuItemsForRole = (role: string): MenuItem[] => {
 
   return baseMenu
 }
+
+export const transformCurrentYear = () => {
+  return new Date().getFullYear()
+}

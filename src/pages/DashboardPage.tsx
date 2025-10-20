@@ -5,22 +5,27 @@ import { useAuth } from '../context/useAuth'
 import { ProgressBarProps, StatCardProps } from '../types'
 import { getSummary, getYearMeta } from '../clients/firestore/firestoreAction'
 import Loading from '../components/Loading'
-import { formatCurrency, transformDate, calculateProgress } from '../utils'
+import {
+  formatCurrency,
+  transformDate,
+  calculateProgress,
+  transformCurrentYear
+} from '../utils'
 
 const DashboardPage: React.FC = () => {
   const { user, isAdmin } = useAuth()
-  const currentYearData = new Date().getFullYear()
+  const currentYearData = transformCurrentYear()
   const [meta, setMeta] = useState<DocumentData | null>(null)
   const [summary, setSummary] = useState<DocumentData | null>(null)
   const [isLoading, setLoading] = useState(false)
 
-  const ts = meta?.iuranData.lastUpdate.seconds
+  const ts = meta?.lastUpdated.seconds
   const updatedDate = transformDate(ts)
 
   const fetchData = async () => {
     try {
       setLoading(true)
-      const metaData = await getYearMeta('2025')
+      const metaData = await getYearMeta(currentYearData.toString())
       const summaryData = await getSummary()
 
       setMeta(metaData)
@@ -35,8 +40,6 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     fetchData()
   }, [])
-
-  console.log('summary', summary)
 
   // Progress bar component
   const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -158,7 +161,7 @@ const DashboardPage: React.FC = () => {
         />
         <StatCard
           title='Total Keseluruhan'
-          value={formatCurrency(summary?.[2025]?.total)}
+          value={formatCurrency(summary?.[currentYearData]?.total)}
           icon={Award}
           color='yellow'
           subtitle='semua tahun'
@@ -198,8 +201,8 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <ProgressBar
-            current={summary?.[2025]?.total}
-            target={summary?.[2025]?.target}
+            current={summary?.[currentYearData]?.total}
+            target={summary?.[currentYearData]?.target}
             label='Total Semua Tahun'
           />
         </div>

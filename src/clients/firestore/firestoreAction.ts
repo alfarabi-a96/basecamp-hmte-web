@@ -92,7 +92,6 @@ export const updateAngkatanAndIuranTotal = async (
     { merge: true }
   )
 
-  console.log('rekapData[year]?.total', rekapData[year]?.total)
   // 5️⃣ Update juga ke iuran/rekapTahunan.{year}
   await setDoc(
     rekapRef,
