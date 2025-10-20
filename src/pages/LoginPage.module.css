@@ -2,3 +2,7 @@
 .form {
   width: 800px;
 }
+
+.background-container {
+  background-image: linear-gradient(to bottom right, #0f172a, #1e3a8a, #0f172a)
+}

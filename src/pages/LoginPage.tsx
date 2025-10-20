@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import Loading from '../components/Loading'
 import { FormData } from '../types'
-import styles from './LoginPage.module.css'
+import loginBg from '../assets/image.jpeg'
 
 const LoginPage: React.FC = () => {
   const { login, loginAsGuest, isLoading, user } = useAuth()
@@ -26,7 +26,6 @@ const LoginPage: React.FC = () => {
       ...formData,
       [e.target.name]: e.target.value
     })
-    // Clear error saat user mulai mengetik
     if (error) setError('')
   }
 
@@ -62,28 +61,132 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
-      <div className='max-w-md w-full space-y-8'>
-        {/* Header */}
-        <div className='text-center'>
-          <div className='mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center'>
-            <User className='h-8 w-8 text-white' />
-          </div>
-          <h2 className='mt-6 text-3xl font-bold text-gray-900'>
-            Login ke Sistem
-          </h2>
-          <p className='mt-2 text-sm text-gray-600'>
-            Laporan Keuangan Iuran Alumni
-          </p>
-        </div>
+    <div
+      style={{
+        minHeight: '100vh',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      {/* Background Foto dengan Blur */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${loginBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(8px)'
+        }}
+      />
 
-        <div className='flex justify-center'>
+      {/* Overlay Gelap */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        }}
+      />
+
+      {/* Login Form Container */}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingTop: '3rem',
+          paddingBottom: '3rem',
+          paddingLeft: '1rem',
+          paddingRight: '1rem'
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '448px'
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              textAlign: 'center',
+              marginBottom: '2rem'
+            }}
+          >
+            <div
+              style={{
+                margin: '0 auto',
+                height: '64px',
+                width: '64px',
+                backgroundImage:
+                  'linear-gradient(to bottom right, rgb(96, 165, 250), rgb(37, 99, 235))',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <LogIn
+                style={{ width: '32px', height: '32px', color: 'white' }}
+              />
+            </div>
+            <h2
+              style={{
+                marginTop: '1.5rem',
+                fontSize: '1.875rem',
+                fontWeight: 'bold',
+                color: 'white'
+              }}
+            >
+              Login ke Sistem
+            </h2>
+            <p
+              style={{
+                marginTop: '0.5rem',
+                fontSize: '0.875rem',
+                color: 'rgb(191, 219, 254)'
+              }}
+            >
+              Laporan Keuangan Iuran Alumni
+            </p>
+          </div>
+
           {/* Login Form */}
-          <div className={`${styles.form} card p-8`}>
-            <form onSubmit={handleSubmit} className='space-y-6'>
+          <div
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '1rem',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+              padding: '2rem',
+              border: '1px solid rgba(255, 255, 255, 0.2)'
+            }}
+          >
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.5rem'
+              }}
+            >
               {/* Error Message */}
               {error && (
-                <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm'>
+                <div
+                  style={{
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    border: '1px solid rgba(248, 113, 113, 0.5)',
+                    color: 'rgb(254, 226, 226)',
+                    padding: '1rem',
+                    borderRadius: '0.5rem',
+                    fontSize: '0.875rem'
+                  }}
+                >
                   {error}
                 </div>
               )}
@@ -91,14 +194,40 @@ const LoginPage: React.FC = () => {
               {/* Username Field */}
               <div>
                 <label
-                  htmlFor='username'
-                  className='block text-sm font-medium text-gray-700 mb-2'
+                  style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'rgb(191, 219, 254)',
+                    marginBottom: '0.5rem'
+                  }}
                 >
                   Username
                 </label>
-                <div className='relative'>
-                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                    <User className='h-5 w-5 text-gray-400' />
+                <div
+                  style={{
+                    position: 'relative'
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      paddingLeft: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      pointerEvents: 'none'
+                    }}
+                  >
+                    <User
+                      style={{
+                        height: '20px',
+                        width: '20px',
+                        color: 'rgb(147, 197, 253)'
+                      }}
+                    />
                   </div>
                   <input
                     id='username'
@@ -107,10 +236,32 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.username}
                     onChange={handleChange}
-                    className='input-field pl-10'
+                    style={{
+                      width: '100%',
+                      paddingLeft: '2.5rem',
+                      paddingRight: '1rem',
+                      paddingTop: '0.75rem',
+                      paddingBottom: '0.75rem',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      borderRadius: '0.5rem',
+                      color: 'white',
+                      backdropFilter: 'blur(4px)',
+                      transition: 'all 0.3s ease',
+                      fontSize: '1rem'
+                    }}
+                    autoComplete='off'
                     placeholder='Masukkan username'
                     disabled={isSubmitting}
-                    autoComplete='email'
+                    onFocus={(e) => {
+                      e.target.style.outline = 'none'
+                      e.target.style.boxShadow = '0 0 0 2px rgb(96, 165, 250)'
+                      e.target.style.borderColor = 'transparent'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'none'
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                    }}
                   />
                 </div>
               </div>
@@ -118,14 +269,40 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div>
                 <label
-                  htmlFor='password'
-                  className='block text-sm font-medium text-gray-700 mb-2'
+                  style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'rgb(191, 219, 254)',
+                    marginBottom: '0.5rem'
+                  }}
                 >
                   Password
                 </label>
-                <div className='relative'>
-                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                    <Lock className='h-5 w-5 text-gray-400' />
+                <div
+                  style={{
+                    position: 'relative'
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      paddingLeft: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      pointerEvents: 'none'
+                    }}
+                  >
+                    <Lock
+                      style={{
+                        height: '20px',
+                        width: '20px',
+                        color: 'rgb(147, 197, 253)'
+                      }}
+                    />
                   </div>
                   <input
                     id='password'
@@ -134,21 +311,67 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className='input-field pl-10 pr-10'
+                    style={{
+                      width: '100%',
+                      paddingLeft: '2.5rem',
+                      paddingRight: '2.5rem',
+                      paddingTop: '0.75rem',
+                      paddingBottom: '0.75rem',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      borderRadius: '0.5rem',
+                      color: 'white',
+                      backdropFilter: 'blur(4px)',
+                      transition: 'all 0.3s ease',
+                      fontSize: '1rem'
+                    }}
                     placeholder='Masukkan password'
                     disabled={isSubmitting}
                     autoComplete='current-password'
+                    onFocus={(e) => {
+                      e.target.style.outline = 'none'
+                      e.target.style.boxShadow = '0 0 0 2px rgb(96, 165, 250)'
+                      e.target.style.borderColor = 'transparent'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'none'
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                    }}
                   />
                   <button
                     type='button'
-                    className='absolute inset-y-0 right-0 pr-3 flex items-center'
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      paddingRight: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                      opacity: isSubmitting ? 0.5 : 1,
+                      background: 'none',
+                      border: 'none'
+                    }}
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isSubmitting}
                   >
                     {showPassword ? (
-                      <EyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                      <EyeOff
+                        style={{
+                          height: '20px',
+                          width: '20px',
+                          color: 'rgb(147, 197, 253)'
+                        }}
+                      />
                     ) : (
-                      <Eye className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                      <Eye
+                        style={{
+                          height: '20px',
+                          width: '20px',
+                          color: 'rgb(147, 197, 253)'
+                        }}
+                      />
                     )}
                   </button>
                 </div>
@@ -157,14 +380,56 @@ const LoginPage: React.FC = () => {
               {/* Login Button */}
               <button
                 type='submit'
-                className='btn-primary w-full flex items-center justify-center space-x-2'
+                style={{
+                  width: '100%',
+                  backgroundImage:
+                    'linear-gradient(to right, rgb(59, 130, 246), rgb(37, 99, 235))',
+                  color: 'white',
+                  fontWeight: '600',
+                  paddingTop: '0.75rem',
+                  paddingBottom: '0.75rem',
+                  borderRadius: '0.5rem',
+                  transition: 'all 0.3s ease',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  opacity: isSubmitting ? 0.7 : 1,
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  fontSize: '1rem'
+                }}
                 disabled={isSubmitting}
+                onMouseEnter={(e) => {
+                  if (!isSubmitting) {
+                    e.currentTarget.style.backgroundImage =
+                      'linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216))'
+                    e.currentTarget.style.transform = 'scale(1.05)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSubmitting) {
+                    e.currentTarget.style.backgroundImage =
+                      'linear-gradient(to right, rgb(59, 130, 246), rgb(37, 99, 235))'
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }
+                }}
               >
                 {isSubmitting ? (
-                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+                  <div
+                    style={{
+                      animation: 'spin 1s linear infinite',
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderBottom: '2px solid transparent',
+                      borderRadius: '50%'
+                    }}
+                  />
                 ) : (
                   <>
-                    <LogIn className='h-4 w-4' />
+                    <LogIn style={{ width: '16px', height: '16px' }} />
                     <span>Login</span>
                   </>
                 )}
@@ -172,13 +437,49 @@ const LoginPage: React.FC = () => {
             </form>
 
             {/* Divider */}
-            <div className='mt-6'>
-              <div className='relative'>
-                <div className='absolute inset-0 flex items-center'>
-                  <div className='w-full border-t border-gray-300' />
+            <div
+              style={{
+                marginTop: '1.5rem'
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative'
+                }}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}
+                  />
                 </div>
-                <div className='relative flex justify-center text-sm'>
-                  <span className='px-2 bg-white text-gray-500'>atau</span>
+                <div
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <span
+                    style={{
+                      paddingLeft: '0.5rem',
+                      paddingRight: '0.5rem',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      color: 'rgba(255, 255, 255, 0.7)'
+                    }}
+                  >
+                    atau
+                  </span>
                 </div>
               </div>
             </div>
@@ -187,29 +488,45 @@ const LoginPage: React.FC = () => {
             <button
               type='button'
               onClick={handleGuestLogin}
-              className='mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200'
+              style={{
+                marginTop: '1rem',
+                width: '100%',
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                color: 'rgb(191, 219, 254)',
+                fontWeight: '500',
+                transition: 'color 0.2s ease',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                opacity: isSubmitting ? 0.5 : 1,
+                background: 'none',
+                border: 'none',
+                padding: '0.5rem 0'
+              }}
               disabled={isSubmitting}
+              onMouseEnter={(e) => {
+                if (!isSubmitting) {
+                  e.currentTarget.style.color = 'rgb(147, 197, 253)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSubmitting) {
+                  e.currentTarget.style.color = 'rgb(191, 219, 254)'
+                }
+              }}
             >
               Masuk tanpa login
             </button>
           </div>
-
-          {/* Demo Credentials */}
-          {/* <div className="card p-4 bg-blue-50 border-blue-200">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">
-              Demo Credentials:
-            </h3>
-            <div className="text-xs text-blue-700 space-y-1">
-              <div>
-                <strong>Admin:</strong> username: admin, password: admin123
-              </div>
-              <div>
-                <strong>Guest:</strong> klik "Masuk sebagai guest"
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
     </div>
   )
 }
