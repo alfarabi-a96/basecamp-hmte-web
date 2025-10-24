@@ -2,12 +2,13 @@ import React, { useState, ChangeEvent, FormEvent } from 'react'
 import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
-import Loading from '../components/Loading'
 import { FormData } from '../types'
+import loginBg from '../assets/image.jpeg'
+import clsx from 'clsx'
 import styles from './LoginPage.module.css'
 
 const LoginPage: React.FC = () => {
-  const { login, loginAsGuest, isLoading, user } = useAuth()
+  const { login, loginAsGuest, user } = useAuth()
   const [formData, setFormData] = useState<FormData>({
     username: '',
     password: ''
@@ -26,7 +27,6 @@ const LoginPage: React.FC = () => {
       ...formData,
       [e.target.name]: e.target.value
     })
-    // Clear error saat user mulai mengetik
     if (error) setError('')
   }
 
@@ -57,48 +57,60 @@ const LoginPage: React.FC = () => {
     loginAsGuest()
   }
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
-      <div className='max-w-md w-full space-y-8'>
-        {/* Header */}
-        <div className='text-center'>
-          <div className='mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center'>
-            <User className='h-8 w-8 text-white' />
+    <div className={clsx(styles.root, 'overflow-hidden relative')}>
+      <div
+        className={clsx(styles.bg, 'absolute')}
+        style={{ backgroundImage: `url(${loginBg})` }}
+      />
+      <div className={clsx(styles.overlay, 'absolute')} />
+      <div
+        className={clsx(
+          styles.container,
+          'relative flex items-center justify-center'
+        )}
+      >
+        <div className={clsx(styles.inner, 'w-full')}>
+          <div className='text-center mb-8'>
+            <div
+              className={clsx(styles.logo, 'flex items-center justify-center')}
+            >
+              <LogIn className={clsx(styles['login-icon'], 'text-white')} />
+            </div>
+            <h2 className='text-white font-bold text-3xl mt-6'>
+              Login ke Sistem
+            </h2>
+            <p className={clsx(styles.subtitle, 'mt-2 text-sm')}>
+              Laporan Keuangan Iuran Alumni
+            </p>
           </div>
-          <h2 className='mt-6 text-3xl font-bold text-gray-900'>
-            Login ke Sistem
-          </h2>
-          <p className='mt-2 text-sm text-gray-600'>
-            Laporan Keuangan Iuran Alumni
-          </p>
-        </div>
-
-        <div className='flex justify-center'>
-          {/* Login Form */}
-          <div className={`${styles.form} card p-8`}>
-            <form onSubmit={handleSubmit} className='space-y-6'>
-              {/* Error Message */}
+          <div className={clsx(styles.card, 'p-8')}>
+            <form
+              onSubmit={handleSubmit}
+              className={clsx(styles.form, 'flex gap-6')}
+            >
               {error && (
-                <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm'>
+                <div className={clsx(styles.error, 'p-4 rounded-lg text-sm')}>
                   {error}
                 </div>
               )}
-
-              {/* Username Field */}
               <div>
                 <label
-                  htmlFor='username'
-                  className='block text-sm font-medium text-gray-700 mb-2'
+                  className={clsx(
+                    styles['field-label'],
+                    'block text-sm font-medium mb-2'
+                  )}
                 >
                   Username
                 </label>
                 <div className='relative'>
-                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                    <User className='h-5 w-5 text-gray-400' />
+                  <div
+                    className={clsx(
+                      styles['icon-left-container'],
+                      'absolute inset-y-0 left-0 flex items-center pointer-events-none'
+                    )}
+                  >
+                    <User className={styles['input-icon']} />
                   </div>
                   <input
                     id='username'
@@ -107,25 +119,33 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.username}
                     onChange={handleChange}
-                    className='input-field pl-10'
+                    className={clsx(
+                      styles.input,
+                      'w-full py-3 rounded-lg text-white'
+                    )}
+                    autoComplete='off'
                     placeholder='Masukkan username'
                     disabled={isSubmitting}
-                    autoComplete='email'
                   />
                 </div>
               </div>
-
-              {/* Password Field */}
               <div>
                 <label
-                  htmlFor='password'
-                  className='block text-sm font-medium text-gray-700 mb-2'
+                  className={clsx(
+                    styles['field-label'],
+                    'block text-sm font-medium mb-2'
+                  )}
                 >
                   Password
                 </label>
                 <div className='relative'>
-                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                    <Lock className='h-5 w-5 text-gray-400' />
+                  <div
+                    className={clsx(
+                      styles['icon-left-container'],
+                      'absolute inset-y-0 left-0 flex items-center pointer-events-none'
+                    )}
+                  >
+                    <Lock className={styles['input-icon']} />
                   </div>
                   <input
                     id='password'
@@ -134,37 +154,44 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className='input-field pl-10 pr-10'
+                    className={clsx(
+                      styles.input,
+                      'w-full py-3 rounded-lg text-white'
+                    )}
                     placeholder='Masukkan password'
                     disabled={isSubmitting}
                     autoComplete='current-password'
                   />
                   <button
                     type='button'
-                    className='absolute inset-y-0 right-0 pr-3 flex items-center'
+                    className={clsx(
+                      styles['toggle-button'],
+                      'absolute inset-y-0 right-0 flex items-center cursor-pointer'
+                    )}
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isSubmitting}
                   >
                     {showPassword ? (
-                      <EyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                      <EyeOff className={styles['eye-icon']} />
                     ) : (
-                      <Eye className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                      <Eye className={styles['eye-icon']} />
                     )}
                   </button>
                 </div>
               </div>
-
-              {/* Login Button */}
               <button
                 type='submit'
-                className='btn-primary w-full flex items-center justify-center space-x-2'
+                className={clsx(
+                  styles.submit,
+                  'w-full text-white py-3 rounded-lg cursor-pointer flex items-center justify-center'
+                )}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+                  <div className={styles.spin} />
                 ) : (
                   <>
-                    <LogIn className='h-4 w-4' />
+                    <LogIn className={styles['login-icon']} />
                     <span>Login</span>
                   </>
                 )}
@@ -172,42 +199,35 @@ const LoginPage: React.FC = () => {
             </form>
 
             {/* Divider */}
-            <div className='mt-6'>
+            <div className={styles['divider-wrap']}>
               <div className='relative'>
-                <div className='absolute inset-0 flex items-center'>
-                  <div className='w-full border-t border-gray-300' />
+                <div
+                  className={clsx(
+                    styles['divider-line'],
+                    'absolute flex items-center'
+                  )}
+                >
+                  <div className={clsx(styles['divider-hr'], 'w-full')} />
                 </div>
                 <div className='relative flex justify-center text-sm'>
-                  <span className='px-2 bg-white text-gray-500'>atau</span>
+                  <span className={clsx(styles['divider-text'], 'px-2')}>
+                    atau
+                  </span>
                 </div>
               </div>
             </div>
-
-            {/* Guest Login */}
             <button
               type='button'
               onClick={handleGuestLogin}
-              className='mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200'
+              className={clsx(
+                styles['guest-button'],
+                'mt-4 w-full text-center text-sm font-medium cursor-pointer'
+              )}
               disabled={isSubmitting}
             >
               Masuk tanpa login
             </button>
           </div>
-
-          {/* Demo Credentials */}
-          {/* <div className="card p-4 bg-blue-50 border-blue-200">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">
-              Demo Credentials:
-            </h3>
-            <div className="text-xs text-blue-700 space-y-1">
-              <div>
-                <strong>Admin:</strong> username: admin, password: admin123
-              </div>
-              <div>
-                <strong>Guest:</strong> klik "Masuk sebagai guest"
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

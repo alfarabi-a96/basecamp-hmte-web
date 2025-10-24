@@ -1,4 +1,183 @@
-/* LoginPage Custom Styles */
+.root {
+  min-height: 100vh;
+}
+
+.bg {
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+
+.overlay {
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  z-index: 10;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+}
+
+.inner {
+  max-width: 448px;
+}
+
+.logo {
+  margin: 0 auto;
+  height: 64px;
+  width: 64px;
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(96, 165, 250),
+    rgb(37, 99, 235)
+  );
+  border-radius: 50%;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.login-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.subtitle {
+  color: rgb(191, 219, 254);
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .form {
-  width: 800px;
+  flex-direction: column;
+}
+
+.error {
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: rgb(254, 226, 226);
+}
+
+.field-label {
+  color: rgb(191, 219, 254);
+}
+
+.icon-left-container {
+  padding-left: 0.75rem;
+}
+
+.input-icon {
+  height: 20px;
+  width: 20px;
+  color: rgb(147, 197, 253);
+}
+
+.input {
+  width: 100%;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(96, 165, 250);
+  border-color: transparent;
+}
+
+.toggle-button {
+  padding-right: 0.75rem;
+  background: none;
+  border: none;
+}
+
+.eye-icon {
+  height: 20px;
+  width: 20px;
+  color: rgb(147, 197, 253);
+}
+
+.submit {
+  background-image: linear-gradient(
+    to right,
+    rgb(59, 130, 246),
+    rgb(37, 99, 235)
+  );
+  font-weight: 600;
+  transition: all 0.3s ease;
+  opacity: 1;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: none;
+  gap: 0.5rem;
+  font-size: 1rem;
+  transform: scale(1);
+}
+
+.submit:hover {
+  background-image: linear-gradient(
+    to right,
+    rgb(37, 99, 235),
+    rgb(29, 78, 216)
+  );
+  transform: scale(1.05);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  border-bottom: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.login-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.divider-wrap {
+  margin-top: 1.5rem;
+}
+
+.divider-line {
+  inset: 0;
+}
+
+.divider-hr {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.divider-text {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.guest-button {
+  color: rgb(191, 219, 254);
+  transition: color 0.2s ease;
+  opacity: 1;
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+}
+
+.guest-button:hover {
+  color: rgb(147, 197, 253);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
