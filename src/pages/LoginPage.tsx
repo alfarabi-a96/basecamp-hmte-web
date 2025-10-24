@@ -2,12 +2,13 @@ import React, { useState, ChangeEvent, FormEvent } from 'react'
 import { Eye, EyeOff, User, Lock, LogIn } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
-import Loading from '../components/Loading'
 import { FormData } from '../types'
 import loginBg from '../assets/image.jpeg'
+import clsx from 'clsx'
+import styles from './LoginPage.module.css'
 
 const LoginPage: React.FC = () => {
-  const { login, loginAsGuest, isLoading, user } = useAuth()
+  const { login, loginAsGuest, user } = useAuth()
   const [formData, setFormData] = useState<FormData>({
     username: '',
     password: ''
@@ -56,178 +57,60 @@ const LoginPage: React.FC = () => {
     loginAsGuest()
   }
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        position: 'relative',
-        overflow: 'hidden'
-      }}
-    >
-      {/* Background Foto dengan Blur */}
+    <div className={clsx(styles.root, 'overflow-hidden relative')}>
       <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${loginBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'blur(8px)'
-        }}
+        className={clsx(styles.bg, 'absolute')}
+        style={{ backgroundImage: `url(${loginBg})` }}
       />
-
-      {/* Overlay Gelap */}
+      <div className={clsx(styles.overlay, 'absolute')} />
       <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)'
-        }}
-      />
-
-      {/* Login Form Container */}
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingTop: '3rem',
-          paddingBottom: '3rem',
-          paddingLeft: '1rem',
-          paddingRight: '1rem'
-        }}
+        className={clsx(
+          styles.container,
+          'relative flex items-center justify-center'
+        )}
       >
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '448px'
-          }}
-        >
-          {/* Header */}
-          <div
-            style={{
-              textAlign: 'center',
-              marginBottom: '2rem'
-            }}
-          >
+        <div className={clsx(styles.inner, 'w-full')}>
+          <div className='text-center mb-8'>
             <div
-              style={{
-                margin: '0 auto',
-                height: '64px',
-                width: '64px',
-                backgroundImage:
-                  'linear-gradient(to bottom right, rgb(96, 165, 250), rgb(37, 99, 235))',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-              }}
+              className={clsx(styles.logo, 'flex items-center justify-center')}
             >
-              <LogIn
-                style={{ width: '32px', height: '32px', color: 'white' }}
-              />
+              <LogIn className={clsx(styles['login-icon'], 'text-white')} />
             </div>
-            <h2
-              style={{
-                marginTop: '1.5rem',
-                fontSize: '1.875rem',
-                fontWeight: 'bold',
-                color: 'white'
-              }}
-            >
+            <h2 className='text-white font-bold text-3xl mt-6'>
               Login ke Sistem
             </h2>
-            <p
-              style={{
-                marginTop: '0.5rem',
-                fontSize: '0.875rem',
-                color: 'rgb(191, 219, 254)'
-              }}
-            >
+            <p className={clsx(styles.subtitle, 'mt-2 text-sm')}>
               Laporan Keuangan Iuran Alumni
             </p>
           </div>
-
-          {/* Login Form */}
-          <div
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '1rem',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-              padding: '2rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)'
-            }}
-          >
+          <div className={clsx(styles.card, 'p-8')}>
             <form
               onSubmit={handleSubmit}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem'
-              }}
+              className={clsx(styles.form, 'flex gap-6')}
             >
-              {/* Error Message */}
               {error && (
-                <div
-                  style={{
-                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                    border: '1px solid rgba(248, 113, 113, 0.5)',
-                    color: 'rgb(254, 226, 226)',
-                    padding: '1rem',
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem'
-                  }}
-                >
+                <div className={clsx(styles.error, 'p-4 rounded-lg text-sm')}>
                   {error}
                 </div>
               )}
-
-              {/* Username Field */}
               <div>
                 <label
-                  style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    color: 'rgb(191, 219, 254)',
-                    marginBottom: '0.5rem'
-                  }}
+                  className={clsx(
+                    styles['field-label'],
+                    'block text-sm font-medium mb-2'
+                  )}
                 >
                   Username
                 </label>
-                <div
-                  style={{
-                    position: 'relative'
-                  }}
-                >
+                <div className='relative'>
                   <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      paddingLeft: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      pointerEvents: 'none'
-                    }}
+                    className={clsx(
+                      styles['icon-left-container'],
+                      'absolute inset-y-0 left-0 flex items-center pointer-events-none'
+                    )}
                   >
-                    <User
-                      style={{
-                        height: '20px',
-                        width: '20px',
-                        color: 'rgb(147, 197, 253)'
-                      }}
-                    />
+                    <User className={styles['input-icon']} />
                   </div>
                   <input
                     id='username'
@@ -236,73 +119,33 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.username}
                     onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      paddingLeft: '2.5rem',
-                      paddingRight: '1rem',
-                      paddingTop: '0.75rem',
-                      paddingBottom: '0.75rem',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      borderRadius: '0.5rem',
-                      color: 'white',
-                      backdropFilter: 'blur(4px)',
-                      transition: 'all 0.3s ease',
-                      fontSize: '1rem'
-                    }}
+                    className={clsx(
+                      styles.input,
+                      'w-full py-3 rounded-lg text-white'
+                    )}
                     autoComplete='off'
                     placeholder='Masukkan username'
                     disabled={isSubmitting}
-                    onFocus={(e) => {
-                      e.target.style.outline = 'none'
-                      e.target.style.boxShadow = '0 0 0 2px rgb(96, 165, 250)'
-                      e.target.style.borderColor = 'transparent'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.boxShadow = 'none'
-                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                    }}
                   />
                 </div>
               </div>
-
-              {/* Password Field */}
               <div>
                 <label
-                  style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    color: 'rgb(191, 219, 254)',
-                    marginBottom: '0.5rem'
-                  }}
+                  className={clsx(
+                    styles['field-label'],
+                    'block text-sm font-medium mb-2'
+                  )}
                 >
                   Password
                 </label>
-                <div
-                  style={{
-                    position: 'relative'
-                  }}
-                >
+                <div className='relative'>
                   <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      paddingLeft: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      pointerEvents: 'none'
-                    }}
+                    className={clsx(
+                      styles['icon-left-container'],
+                      'absolute inset-y-0 left-0 flex items-center pointer-events-none'
+                    )}
                   >
-                    <Lock
-                      style={{
-                        height: '20px',
-                        width: '20px',
-                        color: 'rgb(147, 197, 253)'
-                      }}
-                    />
+                    <Lock className={styles['input-icon']} />
                   </div>
                   <input
                     id='password'
@@ -311,125 +154,44 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      paddingLeft: '2.5rem',
-                      paddingRight: '2.5rem',
-                      paddingTop: '0.75rem',
-                      paddingBottom: '0.75rem',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      borderRadius: '0.5rem',
-                      color: 'white',
-                      backdropFilter: 'blur(4px)',
-                      transition: 'all 0.3s ease',
-                      fontSize: '1rem'
-                    }}
+                    className={clsx(
+                      styles.input,
+                      'w-full py-3 rounded-lg text-white'
+                    )}
                     placeholder='Masukkan password'
                     disabled={isSubmitting}
                     autoComplete='current-password'
-                    onFocus={(e) => {
-                      e.target.style.outline = 'none'
-                      e.target.style.boxShadow = '0 0 0 2px rgb(96, 165, 250)'
-                      e.target.style.borderColor = 'transparent'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.boxShadow = 'none'
-                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                    }}
                   />
                   <button
                     type='button'
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                      paddingRight: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      opacity: isSubmitting ? 0.5 : 1,
-                      background: 'none',
-                      border: 'none'
-                    }}
+                    className={clsx(
+                      styles['toggle-button'],
+                      'absolute inset-y-0 right-0 flex items-center cursor-pointer'
+                    )}
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isSubmitting}
                   >
                     {showPassword ? (
-                      <EyeOff
-                        style={{
-                          height: '20px',
-                          width: '20px',
-                          color: 'rgb(147, 197, 253)'
-                        }}
-                      />
+                      <EyeOff className={styles['eye-icon']} />
                     ) : (
-                      <Eye
-                        style={{
-                          height: '20px',
-                          width: '20px',
-                          color: 'rgb(147, 197, 253)'
-                        }}
-                      />
+                      <Eye className={styles['eye-icon']} />
                     )}
                   </button>
                 </div>
               </div>
-
-              {/* Login Button */}
               <button
                 type='submit'
-                style={{
-                  width: '100%',
-                  backgroundImage:
-                    'linear-gradient(to right, rgb(59, 130, 246), rgb(37, 99, 235))',
-                  color: 'white',
-                  fontWeight: '600',
-                  paddingTop: '0.75rem',
-                  paddingBottom: '0.75rem',
-                  borderRadius: '0.5rem',
-                  transition: 'all 0.3s ease',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  opacity: isSubmitting ? 0.7 : 1,
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  fontSize: '1rem'
-                }}
+                className={clsx(
+                  styles.submit,
+                  'w-full text-white py-3 rounded-lg cursor-pointer flex items-center justify-center'
+                )}
                 disabled={isSubmitting}
-                onMouseEnter={(e) => {
-                  if (!isSubmitting) {
-                    e.currentTarget.style.backgroundImage =
-                      'linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216))'
-                    e.currentTarget.style.transform = 'scale(1.05)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSubmitting) {
-                    e.currentTarget.style.backgroundImage =
-                      'linear-gradient(to right, rgb(59, 130, 246), rgb(37, 99, 235))'
-                    e.currentTarget.style.transform = 'scale(1)'
-                  }
-                }}
               >
                 {isSubmitting ? (
-                  <div
-                    style={{
-                      animation: 'spin 1s linear infinite',
-                      width: '16px',
-                      height: '16px',
-                      border: '2px solid white',
-                      borderBottom: '2px solid transparent',
-                      borderRadius: '50%'
-                    }}
-                  />
+                  <div className={styles.spin} />
                 ) : (
                   <>
-                    <LogIn style={{ width: '16px', height: '16px' }} />
+                    <LogIn className={styles['login-icon']} />
                     <span>Login</span>
                   </>
                 )}
@@ -437,96 +199,37 @@ const LoginPage: React.FC = () => {
             </form>
 
             {/* Divider */}
-            <div
-              style={{
-                marginTop: '1.5rem'
-              }}
-            >
-              <div
-                style={{
-                  position: 'relative'
-                }}
-              >
+            <div className={styles['divider-wrap']}>
+              <div className='relative'>
                 <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
+                  className={clsx(
+                    styles['divider-line'],
+                    'absolute flex items-center'
+                  )}
                 >
-                  <div
-                    style={{
-                      width: '100%',
-                      borderTop: '1px solid rgba(255, 255, 255, 0.2)'
-                    }}
-                  />
+                  <div className={clsx(styles['divider-hr'], 'w-full')} />
                 </div>
-                <div
-                  style={{
-                    position: 'relative',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    fontSize: '0.875rem'
-                  }}
-                >
-                  <span
-                    style={{
-                      paddingLeft: '0.5rem',
-                      paddingRight: '0.5rem',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      color: 'rgba(255, 255, 255, 0.7)'
-                    }}
-                  >
+                <div className='relative flex justify-center text-sm'>
+                  <span className={clsx(styles['divider-text'], 'px-2')}>
                     atau
                   </span>
                 </div>
               </div>
             </div>
-
-            {/* Guest Login */}
             <button
               type='button'
               onClick={handleGuestLogin}
-              style={{
-                marginTop: '1rem',
-                width: '100%',
-                textAlign: 'center',
-                fontSize: '0.875rem',
-                color: 'rgb(191, 219, 254)',
-                fontWeight: '500',
-                transition: 'color 0.2s ease',
-                cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                opacity: isSubmitting ? 0.5 : 1,
-                background: 'none',
-                border: 'none',
-                padding: '0.5rem 0'
-              }}
+              className={clsx(
+                styles['guest-button'],
+                'mt-4 w-full text-center text-sm font-medium cursor-pointer'
+              )}
               disabled={isSubmitting}
-              onMouseEnter={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.color = 'rgb(147, 197, 253)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.color = 'rgb(191, 219, 254)'
-                }
-              }}
             >
               Masuk tanpa login
             </button>
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
     </div>
   )
 }

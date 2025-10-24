@@ -14,13 +14,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  // Check localStorage saat pertama kali load
+  const EXPIRATION_HOURS = 3 // token berlaku 3 jam
+
+  // Cek localStorage saat pertama kali load
   useEffect(() => {
-    const savedUser = localStorage.getItem('auth_user')
-    if (savedUser) {
+    const savedData = localStorage.getItem('auth_user')
+
+    if (savedData) {
       try {
-        const parsedUser: User = JSON.parse(savedUser)
-        setUser(parsedUser)
+        const parsed = JSON.parse(savedData)
+
+        // Cek apakah ada expiry timestamp dan apakah sudah kadaluarsa
+        if (parsed.expiry && Date.now() > parsed.expiry) {
+          console.warn('Token expired, clearing session...')
+          localStorage.removeItem('auth_user')
+          setUser(null)
+        } else {
+          setUser(parsed.user)
+        }
       } catch (error) {
         console.error('Error parsing saved user:', error)
         localStorage.removeItem('auth_user')
@@ -43,11 +54,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         role: 'admin'
       }
 
+      // Simpan user + waktu expired
+      const expiryTime = Date.now() + EXPIRATION_HOURS * 60 * 60 * 1000
+      localStorage.setItem(
+        'auth_user',
+        JSON.stringify({ user: userSession, expiry: expiryTime })
+      )
+
       setUser(userSession)
-      localStorage.setItem('auth_user', JSON.stringify(userSession))
       setIsLoading(false)
       return { success: true }
-    } catch (erorr) {
+    } catch (error) {
       setIsLoading(false)
       return { success: false, error: 'Username atau password salah' }
     }
@@ -61,8 +78,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       role: 'guest'
     }
 
+    const expiryTime = Date.now() + EXPIRATION_HOURS * 60 * 60 * 1000
+    localStorage.setItem(
+      'auth_user',
+      JSON.stringify({ user: guestUser, expiry: expiryTime })
+    )
     setUser(guestUser)
-    localStorage.setItem('auth_user', JSON.stringify(guestUser))
   }
 
   // Logout function
