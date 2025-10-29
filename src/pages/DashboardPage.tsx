@@ -144,7 +144,7 @@ const DashboardPage: React.FC = () => {
       </div>
 
       {/* Quick Stats */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         <StatCard
           title='Iuran Tahun Ini'
           value={formatCurrency(meta?.iuranData.total)}
@@ -159,17 +159,17 @@ const DashboardPage: React.FC = () => {
           color='blue'
           subtitle='dari target'
         />
-        <StatCard
+        {/* <StatCard
           title='Total Keseluruhan'
           value={formatCurrency(summary?.[currentYearData]?.total)}
           icon={Award}
           color='yellow'
           subtitle='semua tahun'
-        />
+        /> */}
       </div>
 
       {/* Main Progress Section */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+      <div>
         {/* Current Year Progress */}
         <div className='card p-6'>
           <div className='flex items-center justify-between mb-4'>
@@ -182,7 +182,7 @@ const DashboardPage: React.FC = () => {
           <ProgressBar
             current={meta?.iuranData.total}
             target={meta?.iuranData.target}
-            label='Target Tahunan'
+            label='Target Iuran'
           />
 
           <div className='mt-6 pt-4 border-t border-gray-200 text-sm'>
@@ -192,7 +192,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Overall Progress */}
-        <div className='card p-6'>
+        {/* <div className='card p-6'>
           <div className='flex items-center justify-between mb-4'>
             <h3 className='text-lg font-semibold text-gray-900'>
               Total Keseluruhan
@@ -205,7 +205,7 @@ const DashboardPage: React.FC = () => {
             target={summary?.[currentYearData]?.target}
             label='Total Semua Tahun'
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Breakdown by Class (Current Year) */}

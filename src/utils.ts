@@ -30,12 +30,12 @@ export const getMenuItemsForRole = (role: string): MenuItem[] => {
       path: '/dashboard',
       icon: 'LayoutDashboard'
     },
-    {
-      id: 'reports',
-      title: 'Laporan Iuran',
-      path: '/reports',
-      icon: 'FileText'
-    }
+    // {
+    //   id: 'reports',
+    //   title: 'Laporan Iuran',
+    //   path: '/reports',
+    //   icon: 'FileText'
+    // }
   ]
 
   if (role === 'admin') {
